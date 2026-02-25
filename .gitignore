@@ -1,0 +1,39 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Vercel
+.vercel/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs
+logs/
+*.log
+
+# Java / Gradle artifacts (if copied robot code contains them)
+**/.gradle/
+**/build/
+**/bin/
+**/out/
+
+# Python cache (sometimes present in tooling repos)
+__pycache__/
+*.py[cod]

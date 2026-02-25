@@ -1,0 +1,61 @@
+name: Sync Team Robot Code
+
+on:
+  schedule:
+    - cron: "0 12 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout MCP repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Clone team robot repo
+        run: |
+          rm -rf /tmp/robot-src
+          git clone --depth 1 https://robot-code-git-repo /tmp/robot-src
+
+      - name: Sync robot code into MCP context
+      # Example files to delete
+        run: |
+          mkdir -p src/data/robot
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.gradle/' \
+            --exclude='build/' \
+            --exclude='bin/' \
+            --exclude='out/' \
+            --exclude='images/' \
+            --exclude='gradle/' \
+            --exclude='.vscode/' \
+            --exclude='.wpilib/' \
+            --exclude='.gitignore' \
+            --exclude='gradlew' \
+            --exclude='gradlew.bat' \
+            --exclude='simgui.json' \
+            --exclude='elastic-layout.json' \
+            /tmp/robot-src/ src/data/robot/
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add src/data/robot
+
+          if git diff --cached --quiet; then
+            echo "No robot code changes detected."
+            exit 0
+          fi
+
+          git commit -m "chore(sync): update robot code"
+          git push

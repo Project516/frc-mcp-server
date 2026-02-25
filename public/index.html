@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRC MCP Server</title>
+  <style>
+    :root {
+      --bg: #0b1f2f;
+      --bg-card: #12344d;
+      --bg-card-alt: #0f2a40;
+      --accent: #1f9d6a;
+      --accent-light: #50d3a2;
+      --border: #1d5f85;
+      --text: #e7f5ff;
+      --text-muted: #b3d5e8;
+      --code-bg: #0a1724;
+      --success: #7ee0ba;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #145d86 0%, #0b1f2f 60%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 1.5rem 2.5rem;
+      text-align: center;
+    }
+
+    header .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.85rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #7ee0ba, #50d3a2 50%, #2ea8e5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    header p.subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .endpoint-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 1.1rem;
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.95rem;
+      color: var(--accent-light);
+    }
+
+    .endpoint-pill .label {
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.82rem;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    p {
+      color: var(--text-muted);
+      margin-bottom: 0.85rem;
+    }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.4rem;
+    }
+
+    .card .icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1rem;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    /* ── Code blocks ── */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.1rem 1.3rem;
+      overflow-x: auto;
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text);
+      margin: 0.5rem 0 1rem;
+    }
+
+    code {
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.35em;
+      font-size: 0.88em;
+      color: var(--accent-light);
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    /* ── Steps ── */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.1rem;
+    }
+
+    .steps li .step-body {
+      flex: 1;
+    }
+
+    .steps li .step-body p {
+      margin: 0 0 0.5rem;
+    }
+
+    /* ── Tool table ── */
+    .tool-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    .tool-table th {
+      text-align: left;
+      padding: 0.6rem 1rem;
+      background: var(--bg-card-alt);
+      color: var(--accent-light);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tool-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(29, 95, 133, 0.4);
+      vertical-align: top;
+      color: var(--text-muted);
+    }
+
+    .tool-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tool-name {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      color: var(--accent-light);
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    /* ── Prompt examples ── */
+    .prompt-block {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 0.75rem;
+      font-style: italic;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    /* ── FAQ ── */
+    details {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+    }
+
+    details summary {
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    details summary::-webkit-details-marker { display: none; }
+
+    details summary::after {
+      content: '+';
+      color: var(--accent-light);
+      font-size: 1.2rem;
+      font-weight: 300;
+    }
+
+    details[open] summary::after {
+      content: '−';
+    }
+
+    details .faq-body {
+      padding: 0 1.25rem 1.1rem;
+      color: var(--text-muted);
+    }
+
+    details .faq-body p {
+      margin-bottom: 0.5rem;
+    }
+
+    details .faq-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Tip callout ── */
+    .tip {
+      background: rgba(126, 224, 186, 0.1);
+      border: 1px solid rgba(126, 224, 186, 0.35);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      color: var(--success);
+      font-size: 0.92rem;
+      margin-bottom: 1rem;
+    }
+
+    .tip strong { color: var(--success); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    footer a { color: var(--accent-light); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .steps li {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HEADER
+══════════════════════════════════════ -->
+<header>
+  <div class="badge">FRC MCP Server</div>
+  <h1>FRC MCP Server</h1>
+  <p class="subtitle">
+    Give your AI coding agent full access to FRC robot code, WPILib docs, and
+    vendor library context — right inside VS Code.
+  </p>
+  <div class="endpoint-pill">
+    <span class="label">MCP Endpoint →</span>
+    https://frc-mcp-server/mcp
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     MAIN
+══════════════════════════════════════ -->
+<main>
+
+  <!-- ── What is this server? ── -->
+  <section id="about">
+    <h2>What is this MCP server?</h2>
+    <p>
+      This is a <strong>Model Context Protocol (MCP)</strong> server.
+      It lets AI assistants — like GitHub Copilot, Claude, or Cursor — read and search
+      your team's robot source code and FRC/WPILib documentation directly, without you having
+      to paste snippets manually.
+    </p>
+    <p>
+      Once connected, your agent can look up constants, subsystem logic, autonomous routines,
+      WPILib APIs, and vendor library patterns just by asking natural language questions.
+    </p>
+
+    <div class="card-grid" style="margin-top:1.25rem">
+      <div class="card">
+        <div class="icon">🤖</div>
+        <h3>Robot Code Context</h3>
+        <p>Indexed Java source files — subsystems, commands, constants, and more.</p>
+      </div>
+      <div class="card">
+        <div class="icon">📚</div>
+        <h3>WPILib Docs</h3>
+        <p>Official FRC documentation.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🔧</div>
+        <h3>Vendor Libraries</h3>
+        <p>REV, CTRE, PathPlanner, PhotonVision snippets and config patterns your robot actually uses.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Available Tools ── -->
+  <section id="tools">
+    <h2>Available MCP Tools</h2>
+    <p>The server exposes three tools that your agent can call automatically:</p>
+
+    <table class="tool-table">
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>What it does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tool-name">list_frc_sources</td>
+          <td>Lists all indexed files grouped by directory. Use this first to discover what context is available.</td>
+        </tr>
+        <tr>
+          <td class="tool-name">search_frc_context</td>
+          <td>Full-text search across all robot code and docs. Returns ranked snippets with surrounding context.</td>
+        </tr>
+        <tr>
+          <td class="tool-name">get_frc_file</td>
+          <td>Reads a complete file or a specific line range. Perfect for examining exact code or configuration details.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── VS Code Setup ── -->
+  <section id="vscode-setup">
+    <h2>How to use in VS Code</h2>
+    <p>
+      VS Code supports MCP servers natively through GitHub Copilot's agent mode
+      (VS Code 1.99+). Follow these steps:
+    </p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <p><strong>Open (or create) your workspace MCP config</strong></p>
+          <p>
+            Create the file <code>.vscode/mcp.json</code> in your project root, or open
+            it if it already exists. This file tells VS Code which MCP servers to load.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p><strong>Add the frc-mcp-server MCP server entry</strong></p>
+          <p>Paste the following into <code>.vscode/mcp.json</code>:</p>
+          <pre><code>{
+  "servers": {
+    "mcp-frc-server": {
+      "type": "http",
+      "url": "https://frc-mcp-server/mcp"
+    }
+  }
+}</code></pre>
+          <p>
+            If you already have other servers in the file, add the
+            <code>"frc-mcp-server"</code> entry alongside them inside the
+            <code>"servers"</code> object.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p><strong>Enable agent mode in Copilot Chat</strong></p>
+          <p>
+            Open the Copilot Chat panel (<kbd>Ctrl+Alt+I</kbd>) and switch the
+            chat mode dropdown from <em>Ask</em> to <strong>Agent</strong>.
+            The server will be listed under the <em>Tools</em> icon in the chat toolbar.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <p><strong>Verify the connection</strong></p>
+          <p>
+            In Agent mode, type the prompt below and confirm the agent calls
+            <code>list_frc_sources</code> and returns a file tree:
+          </p>
+          <pre><code>List the available FRC context sources.</code></pre>
+        </div>
+      </li>
+    </ol>
+
+    <div class="tip">
+      <strong>Tip:</strong> You can also add the server globally (for all projects) via
+      <strong>File → Preferences → Settings</strong>, search for
+      <em>"MCP"</em>, and add the entry there under
+      <code>github.copilot.chat.mcp.servers</code>.
+    </div>
+  </section>
+
+  <!-- ── How to Prompt ── -->
+  <section id="prompting">
+    <h2>How to prompt agents effectively</h2>
+    <p>
+      The agent will automatically decide when to call MCP tools based on your question.
+      Here are proven prompting patterns that get the best results:
+    </p>
+
+    <h3>🔍 Discovery prompts</h3>
+    <p>Start here when you first connect or want to explore what's available:</p>
+    <div class="prompt-block">"List all available FRC context sources so I know what robot code and docs are indexed."</div>
+    <div class="prompt-block">"Search the FRC context for everything related to swerve drive odometry."</div>
+
+    <h3>💡 Code question prompts</h3>
+    <p>Ask about specific classes, constants, or subsystems:</p>
+    <div class="prompt-block">"Using the team's robot code context, explain how the shooter subsystem is tuned — what are the PID constants and feed-forward values?"</div>
+    <div class="prompt-block">"Find all usages of AutoBuilder in the robot code and explain how autonomous routines are structured."</div>
+    <div class="prompt-block">"What swerve drive library does this robot use? Show me the relevant configuration constants."</div>
+
+    <h3>✍️ Code generation prompts</h3>
+    <p>Ask the agent to write new code that matches your team's existing style:</p>
+    <div class="prompt-block">"Using the team's existing subsystem patterns from the robot code context, write a new Intake subsystem with a SparkMAX motor that runs at 80% speed when a button is held."</div>
+    <div class="prompt-block">"Based on how other commands are structured in the robot code, create a new sequential command group for scoring in the amp."</div>
+
+    <h3>📖 Docs &amp; reference prompts</h3>
+    <div class="prompt-block">"Look up the WPILib docs for ProfiledPIDController and show me how to configure motion constraints."</div>
+    <div class="prompt-block">"Search the FRC docs for how to use PathPlanner's on-the-fly path generation."</div>
+
+    <h3>Best practices</h3>
+    <ul style="color: var(--text-muted); padding-left: 1.4rem; line-height: 2;">
+      <li>Always use <strong>Agent mode</strong> (not Ask or Edit) so tools are called automatically.</li>
+      <li>Mention <em>"using the robot code context"</em> or <em>"using FRC context"</em> to hint the agent to use MCP tools.</li>
+      <li>For large files, ask the agent to search first, then read specific sections.</li>
+      <li>If the agent doesn't use tools, explicitly ask: <em>"Call list_frc_sources to see what's available."</em></li>
+    </ul>
+  </section>
+
+  <!-- ── FAQ ── -->
+  <section id="faq">
+    <h2>FAQ</h2>
+
+    <details>
+      <summary>What is an MCP server?</summary>
+      <div class="faq-body">
+        <p>
+          <strong>MCP (Model Context Protocol)</strong> is an open standard developed by Anthropic
+          that lets AI assistants connect to external tools, databases, and services in a
+          structured way.
+        </p>
+        <p>
+          Think of it like a plugin system for AI agents. Instead of you copy-pasting code
+          snippets into chat, an MCP server exposes <em>tools</em> the AI can call
+          programmatically — searching files, reading documentation, querying databases, and more.
+        </p>
+        <p>
+          MCP is now supported by VS Code (Copilot), Claude Desktop, Cursor, Windsurf, and other
+          AI coding tools. Any MCP-compatible agent can connect to any MCP server using a
+          standard HTTP or stdio transport.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Why use an MCP server instead of pasting code into chat?</summary>
+      <div class="faq-body">
+        <p>
+          Pasting code manually is slow, error-prone, and limited by chat window size.
+          An MCP server lets the agent <em>search on demand</em> — it only fetches the
+          snippets relevant to your question, so responses stay focused and accurate.
+        </p>
+        <p>
+          It also means context is always up-to-date: when the robot code changes and the
+          server is redeployed, every agent automatically sees the latest version.
+        </p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Which AI tools support MCP?</summary>
+      <div class="faq-body">
+        <p>Tools with MCP support (HTTP transport) include:</p>
+        <ul style="padding-left:1.2rem; line-height:2;">
+          <li><strong>VS Code</strong> with GitHub Copilot (v1.99+, Agent mode)</li>
+          <li><strong>Claude Desktop</strong> (Anthropic)</li>
+          <li><strong>Cursor</strong></li>
+          <li><strong>Windsurf</strong> (Codeium)</li>
+          <li>Any tool that implements the MCP client spec</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>The agent isn't calling MCP tools — what's wrong?</summary>
+      <div class="faq-body">
+        <p>Common fixes:</p>
+        <ul style="padding-left:1.2rem; line-height:2;">
+          <li>Make sure you're in <strong>Agent mode</strong> (not Ask or Edit) in Copilot Chat.</li>
+          <li>Check that <code>.vscode/mcp.json</code> is saved and the URL is correct.</li>
+          <li>Reload VS Code after changing the MCP config (<kbd>Ctrl+Shift+P</kbd> → <em>Reload Window</em>).</li>
+          <li>Look for the <em>Tools</em> icon in the chat toolbar — the server should appear there.</li>
+          <li>Try explicitly asking: <em>"Use the frc-mcp-server MCP tools to list sources."</em></li>
+        </ul>
+      </div>
+    </details>
+
+</main>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <p>
+    <a href="https://github.com/Project516/frc-mcp-server" target="_blank" rel="noopener">GitHub</a>
+    &nbsp;·&nbsp;
+    MCP Endpoint: <code>https://frc-mcp-server/mcp</code>
+  </p>
+</footer>
+
+</body>
+</html>
