@@ -1,0 +1,36 @@
+{
+  "name": "frc-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for FRC robot code + WPILib context",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --pretty",
+    "typecheck": "tsc --noEmit --pretty",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Project516/frc-mcp-server.git"
+  },
+  "keywords": [],
+  "author": "project516",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Project516/frc-mcp-server/issues"
+  },
+  "homepage": "https://github.com/Project516/frc-mcp-server",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
