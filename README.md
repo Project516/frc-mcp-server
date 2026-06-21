@@ -4,9 +4,9 @@ A customizable [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 ## Features
 
-- **`list_frc_sources`** — Browse all indexed files grouped by directory
-- **`search_frc_context`** — Search across robot code and docs for classes, methods, constants, and concepts
-- **`get_frc_file`** — Read specific files (full or partial by line range)
+- **`list_frc_sources`**: Browse all indexed files grouped by directory
+  - **`search_frc_context`**: Search across robot code and docs for classes, methods, constants, and concepts
+  - **`get_frc_file`**: Read specific files (full or partial by line range)
 - Deploy to **Vercel** in one click or run locally
 - Customizable: add your own robot code, WPILib snippets, and vendor docs
 
@@ -113,7 +113,7 @@ Read complete or partial content of a specific indexed file. Use for examining e
 | `startLine`  | number | No       | 1-based start line. |
 | `endLine`    | number | No       | 1-based end line (inclusive). |
 
-> **Security:** Path traversal is blocked — only files under `src/data/` are accessible.
+> **Security:** Path traversal is blocked: only files under `src/data/` are accessible.
 
 ## Deploying to Vercel
 
@@ -149,7 +149,7 @@ Contributions are welcome! Here's how you can help:
 5. Commit and push: `git commit -m "Add my feature"`
 6. Open a pull request against the `master` branch
 
-Please keep PRs focused — one improvement per PR makes review easier.
+Please keep PRs focused: one improvement per PR makes review easier.
 
 ## License
 
