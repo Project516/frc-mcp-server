@@ -1,16 +1,16 @@
 # frc-mcp-server
 
-A customizable [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for FIRST Robotics Competition (FRC) teams. It exposes your team's robot code, WPILib documentation, and vendor library references as searchable context to AI agents — making it easy to ask questions, debug, and generate code that's grounded in your actual project.
+A customizable [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for FIRST Robotics Competition (FRC) teams. It exposes your team's robot code, WPILib documentation, and vendor library references as searchable context to AI agents, making it easy to ask questions, debug, and generate code that's grounded in your actual project.
 
 **Live deployment:** [frc-mcp-server.vercel.app](https://frc-mcp-server.vercel.app)
 
 ## Features
 
-- **List sources** — Discover all indexed FRC documentation and robot code files grouped by directory
-- **Search context** — Full-text search across docs and code for classes, methods, constants, and concepts
-- **Read files** — Retrieve complete or partial file contents with line-range support
-- **Deploy anywhere** — Runs on Vercel, locally via Node, or any Node.js host
-- **Customizable** — Drop your own robot code and docs into `src/data/` to tailor the context to your team
+- **List sources**: Discover all indexed FRC documentation and robot code files grouped by directory
+- **Search context**: Full-text search across docs and code for classes, methods, constants, and concepts
+- **Read files**: Retrieve complete or partial file contents with line-range support
+- **Deploy anywhere**: Runs on Vercel, locally via Node, or any Node.js host
+- **Customizable**: Drop your own robot code and docs into `src/data/` to tailor the context to your team
 
 ## MCP Tools
 
@@ -22,15 +22,15 @@ A customizable [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 ### `search_frc_context` parameters
 
-- `query` (required) — Text to search for (e.g. `PIDController`, `swerve`, `vision`, `AutoBuilder`). Case-insensitive.
-- `sourcePath` (optional) — Limit search to a specific file or directory prefix (e.g. `robot/src/main/java/frc/robot/` or `frc-docs/`).
-- `limit` (optional) — Max snippets to return (default: 8, max: 25).
+- `query` (required): Text to search for (e.g. `PIDController`, `swerve`, `vision`, `AutoBuilder`). Case-insensitive.
+- `sourcePath` (optional): Limit search to a specific file or directory prefix (e.g. `robot/src/main/java/frc/robot/` or `frc-docs/`).
+- `limit` (optional): Max snippets to return (default: 8, max: 25).
 
 ### `get_frc_file` parameters
 
-- `sourcePath` (required) — Relative path from `list_frc_sources` (e.g. `robot/src/main/java/frc/robot/Constants.java`).
-- `startLine` (optional) — 1-based start line.
-- `endLine` (optional) — 1-based end line (inclusive).
+- `sourcePath` (required): Relative path from `list_frc_sources` (e.g. `robot/src/main/java/frc/robot/Constants.java`).
+- `startLine` (optional): 1-based start line.
+- `endLine` (optional): 1-based end line (inclusive).
 
 ## Quick Start
 
@@ -110,7 +110,7 @@ Contributions are welcome! To contribute:
 5. Commit and push your branch
 6. Open a pull request
 
-Please keep PRs focused — one improvement per PR makes review easier for everyone.
+Please keep PRs focused. One improvement per PR makes review easier for everyone.
 
 ## License
 
