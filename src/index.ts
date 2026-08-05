@@ -212,7 +212,13 @@ function createServer() {
       const normalizedRoot = path.resolve(DATA_ROOT);
       const normalizedTarget = path.resolve(absolutePath);
 
-      if (!normalizedTarget.startsWith(normalizedRoot)) {
+      // Enforce a real path boundary so a sibling directory whose name shares the
+      // DATA_ROOT prefix (e.g. "src/data" vs "src/data-secret") cannot be reached.
+      // Permitted targets are DATA_ROOT itself or anything strictly inside it.
+      const isInsideRoot =
+        normalizedTarget === normalizedRoot ||
+        normalizedTarget.startsWith(normalizedRoot + path.sep);
+      if (!isInsideRoot) {
         return createTextResult("Invalid sourcePath: path traversal is not allowed.");
       }
 
@@ -225,7 +231,8 @@ function createServer() {
 
       const allLines = rawContent.split(/\r?\n/);
       const start = Math.max(1, startLine ?? 1);
-      const end = Math.max(start, endLine ?? allLines.length);
+      const maxEnd = Math.max(start, allLines.length);
+      const end = Math.min(Math.max(start, endLine ?? allLines.length), maxEnd);
       const selected = allLines.slice(start - 1, end);
 
       return createTextResult(
