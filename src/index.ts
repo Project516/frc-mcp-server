@@ -4,6 +4,7 @@ import { z } from "zod";
 import fs from "fs/promises";
 import path from "path";
 import type { IncomingMessage, ServerResponse } from "http";
+import { safeResolveWithinRoot } from "./pathSafety.js";
 
 const DATA_ROOT = path.join(process.cwd(), "src", "data");
 const MAX_SNIPPET_CHARS = 5000;
@@ -208,11 +209,8 @@ function createServer() {
     },
     async ({ sourcePath, startLine, endLine }) => {
       const safePath = sourcePath.replace(/^\/+/, "");
-      const absolutePath = path.join(DATA_ROOT, safePath);
-      const normalizedRoot = path.resolve(DATA_ROOT);
-      const normalizedTarget = path.resolve(absolutePath);
-
-      if (!normalizedTarget.startsWith(normalizedRoot)) {
+      const normalizedTarget = safeResolveWithinRoot(DATA_ROOT, safePath);
+      if (normalizedTarget === null) {
         return createTextResult("Invalid sourcePath: path traversal is not allowed.");
       }
 
