@@ -82,6 +82,7 @@ See [docs/FRC_CONTEXT.md](docs/FRC_CONTEXT.md) for detailed guidance on organizi
 - Prefer fewer, high-signal files over copies of entire documentation sites
 - Add a `README.md` in each subfolder describing its contents
 - Treat everything in `src/data/` as potentially visible — never include secrets or tokens
+- If the `src/data` directory does not exist, create it.
 
 ## Project Structure
 
