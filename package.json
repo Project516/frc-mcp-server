@@ -22,7 +22,7 @@
   },
   "homepage": "https://frc-mcp-server.vercel.app",
   "engines": {
-    "node": ">=20"
+    "node": "^22.23.4 || >=24.22.1"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

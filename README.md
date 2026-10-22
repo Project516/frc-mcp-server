@@ -36,7 +36,7 @@ A customizable [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 ### Prerequisites
 
-- Node.js 20 or later
+- Node.js 22.23.4 or later, or 24.22.1 or later
 
 ### Install and run locally
 
