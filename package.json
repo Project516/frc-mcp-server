@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc --pretty",
     "typecheck": "tsc --noEmit --pretty",
+    "test": "node --import tsx --test",
     "start": "node dist/index.js"
   },
   "repository": {
